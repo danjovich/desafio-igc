@@ -8,6 +8,9 @@ dependencies:
   '@dnd-kit/core':
     specifier: ^6.3.1
     version: 6.3.1(react-dom@18.3.1)(react@18.3.1)
+  '@dnd-kit/utilities':
+    specifier: ^3.2.2
+    version: 3.2.2(react@18.3.1)
   '@radix-ui/react-dropdown-menu':
     specifier: ^2.1.2
     version: 2.1.2(@types/react-dom@18.3.2)(@types/react@18.3.14)(react-dom@18.3.1)(react@18.3.1)
