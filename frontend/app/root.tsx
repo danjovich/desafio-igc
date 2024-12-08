@@ -7,6 +7,9 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { ClerkApp } from "@clerk/remix";
+import { rootAuthLoader } from "@clerk/remix/ssr.server";
+import { ptBR } from "@clerk/localizations";
 
 import "./tailwind.css";
 import { themeSessionResolver } from "./sessions.server";
@@ -17,12 +20,16 @@ import {
 } from "remix-themes";
 import clsx from "clsx";
 
-// Returns the theme from the session storage using the loader
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { getTheme } = await themeSessionResolver(request);
-  return {
-    theme: getTheme(),
-  };
+export async function loader(args: LoaderFunctionArgs) {
+  // clerk auth
+  return rootAuthLoader(args, async ({ request }) => {
+    // Returns the theme from the session storage
+    const { getTheme } = await themeSessionResolver(request);
+
+    return {
+      theme: getTheme(),
+    };
+  });
 }
 
 export const links: LinksFunction = () => [
@@ -63,7 +70,7 @@ export function App() {
 // Wraps the app with ThemeProvider for allowing change themes.
 // `specifiedTheme` is the stored theme in the session storage.
 // `themeAction` is the action name that's used to change the theme in the session storage.
-export default function AppWithProviders() {
+function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
@@ -71,3 +78,7 @@ export default function AppWithProviders() {
     </ThemeProvider>
   );
 }
+
+export default ClerkApp(AppWithProviders, {
+  localization: ptBR,
+});
