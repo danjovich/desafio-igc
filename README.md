@@ -10,17 +10,20 @@
     - [x] Clicar para abrir edição da tarefa
     - [ ] Criar novos cards
   - [ ] Tarefas
-    - [ ] Título editável
-    - [ ] Descrição editável 
-    - [ ] Descrição com editor *rich text*
-    - [ ] Prioridade editável
+    - [x] Título editável
+    - [x] Descrição editável 
+    - [x] Descrição com editor *rich text*
+    - [x] Prioridade editável
     - [ ] Atribuição editável
     - [ ] Excluir
     - [ ] Mostrar histórico de alterações
+    - [ ] Melhorar estilização
   - [ ] Autenticação
     - [ ] Página inicial para usuários não autenticados
     - [ ] Gerenciamento de autenticação com o Clerk
     - [ ] Edição simultânea
+  - [ ] Rever estilização
+  - [ ] Responsividade
 - [ ] Backend
   - [ ] Tabela de colunas
     - [ ] Criação
