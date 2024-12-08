@@ -1,21 +1,16 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "../ui/card";
+import Task from "~/interfaces/Task";
 
 interface KanbanCardProps {
-  title: string;
-  index: number;
-  parent: string;
+  task: Task;
 }
 
-export default function KanbanCard({ title, index, parent }: KanbanCardProps) {
+export default function KanbanCard({ task }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: title,
-    data: {
-      title,
-      index,
-      parent,
-    },
+    id: task.id,
+    data: { ...task },
   });
 
   const style = {
@@ -24,7 +19,7 @@ export default function KanbanCard({ title, index, parent }: KanbanCardProps) {
 
   return (
     <Card {...listeners} {...attributes} ref={setNodeRef} style={style}>
-      <p>{title}</p>
+      <p>{task.title}</p>
     </Card>
   );
 }
