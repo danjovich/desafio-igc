@@ -17,7 +17,7 @@
     - [x] Prioridade editável
     - [ ] Atribuição editável
     - [x] Excluir
-    - [ ] Mostrar histórico de alterações
+    - [x] Mostrar histórico de alterações
     - [ ] Melhorar estilização
   - [ ] Autenticação
     - [x] Página inicial para usuários não autenticados

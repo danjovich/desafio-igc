@@ -40,6 +40,11 @@ export class TaskController {
     return this.taskService.getTask(id);
   }
 
+  @Get(':id/history')
+  async getTaskHistory(@Param('id') id: string) {
+    return this.taskService.getTaskHistory(id);
+  }
+
   @Put(':id')
   async updateTask(
     @Param('id') id: string,

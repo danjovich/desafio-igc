@@ -1,5 +1,6 @@
 import Column from "~/interfaces/Column";
 import Task from "~/interfaces/Task";
+import TaskHistory from "~/interfaces/TaskHistory";
 
 type CreateTask = Omit<Task, "id" | "responsible"> & { responsible?: string };
 type UpdateTask = Partial<CreateTask> & { id: string };
@@ -121,6 +122,17 @@ export default class ApiService {
     const task = await response.json();
 
     return task;
+  }
+
+  async fetchTaskHistory(taskId: string): Promise<TaskHistory[]> {
+    const response = await fetch(`${this.apiUrl}/tasks/${taskId}/history`, {
+      headers: {
+        Authorization: `Bearer ${await ApiService.getToken?.()}`,
+      },
+    });
+    const history = await response.json();
+
+    return history;
   }
 
   async updateTask(task: UpdateTask): Promise<Task> {

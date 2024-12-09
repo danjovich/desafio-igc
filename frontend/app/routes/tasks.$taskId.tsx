@@ -7,9 +7,11 @@ import ApiService from "~/services/ApiService";
 import invariant from "tiny-invariant";
 import Priority from "~/interfaces/Priority";
 import Column from "~/interfaces/Column";
+import TaskHistory from "~/interfaces/TaskHistory";
 
 interface LoaderData {
   task: Task;
+  taskHistory: TaskHistory[];
   columns: Column[];
   initialColumnId?: string;
 }
@@ -18,7 +20,33 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   invariant(params.taskId, "Missing taskId param");
 
   const task = await ApiService.getInstance().fetchTask(params.taskId);
+  const taskHistory = await ApiService.getInstance().fetchTaskHistory(
+    params.taskId
+  );
   const columns = await ApiService.getInstance().fetchColumns();
+
+  let actualTaskHistory = [];
+
+  if (Array.isArray(taskHistory)) {
+    // show column names instead of ids
+    for (const history of taskHistory) {
+      if (history.changedField === "columnId") {
+        const column = columns.find((c) => c.id === history.newValue);
+        if (column) {
+          history.newValue = column.title;
+        }
+
+        const oldColumn = columns.find((c) => c.id === history.oldValue);
+        if (oldColumn) {
+          history.oldValue = oldColumn.title;
+        }
+      }
+
+      actualTaskHistory.push(history);
+    }
+  } else {
+    actualTaskHistory = taskHistory;
+  }
 
   const url = new URL(request.url);
   const initialColumnId = url.searchParams.get("column");
@@ -27,6 +55,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     task: task.id ? task : null,
     columns,
     initialColumnId,
+    taskHistory: actualTaskHistory,
   } as LoaderData;
 };
 
@@ -87,7 +116,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function EditTask() {
-  const { task, columns, initialColumnId }: LoaderData = useLoaderData();
+  const { task, columns, initialColumnId, taskHistory }: LoaderData =
+    useLoaderData();
 
   const navigate = useNavigate();
 
@@ -100,6 +130,7 @@ export default function EditTask() {
       <DialogContent className="w-fit">
         <EditTaskDialog
           task={task}
+          taskHistory={taskHistory}
           columns={columns}
           initialColumnId={initialColumnId}
         />

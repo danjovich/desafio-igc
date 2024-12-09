@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Task } from '@prisma/client';
+import { Task, TaskHistory } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
 import CreateTaskDTO from '../dtos/CreateTaskDTO';
 import UpdateTaskDTO from '../dtos/UpdateTaskDTO';
@@ -48,6 +48,22 @@ export class TaskService {
     }
 
     return task;
+  }
+
+  async getTaskHistory(id: string): Promise<TaskHistory[]> {
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    return this.prisma.taskHistory.findMany({
+      where: {
+        taskId: id,
+      },
+    });
   }
 
   private async updateTaskHistory(
