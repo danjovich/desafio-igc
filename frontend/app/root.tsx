@@ -16,6 +16,7 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
+  SignUpButton,
   SignOutButton,
 } from "@clerk/remix";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
@@ -130,12 +131,15 @@ export function App() {
                 <ModeToggle />
                 <SignedIn>
                   <SignOutButton>
-                    <Button className="ml-2">Sair</Button>
+                    <Button className="ml-3">Sair</Button>
                   </SignOutButton>
                 </SignedIn>
                 <SignedOut>
+                  <SignUpButton>
+                    <Button className="ml-3">Criar conta</Button>
+                  </SignUpButton>
                   <SignInButton>
-                    <Button className="ml-2">Fazer Login</Button>
+                    <Button className="ml-3">Fazer login</Button>
                   </SignInButton>
                 </SignedOut>
               </div>
@@ -152,8 +156,14 @@ export function App() {
           <SignedOut>
             <div className="flex flex-col items-center">
               <h1 className="text-5xl font-bold mt-4">Bem-vindo ao Kanban!</h1>
-              <p className="text-xl mt-4">Um Kanban colaborativo minimalista e fácil de usar.</p>
-              <img className="rounded-2xl mt-8" src="/screenshot.png" alt="Kanban" />
+              <p className="text-xl mt-4">
+                Um Kanban colaborativo minimalista e fácil de usar.
+              </p>
+              <img
+                className="rounded-2xl mt-8"
+                src="/screenshot.png"
+                alt="Kanban"
+              />
             </div>
           </SignedOut>
         </div>
