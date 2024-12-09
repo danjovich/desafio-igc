@@ -50,14 +50,14 @@ export default class ApiService {
     return columns;
   }
 
-  async updateColumn(column: Column): Promise<Column> {
-    const response = await fetch(`${this.apiUrl}/columns/${column.id}`, {
+  async updateColumn(id: string, title: string): Promise<Column> {
+    const response = await fetch(`${this.apiUrl}/columns/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${await ApiService.getToken?.()}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(column),
+      body: JSON.stringify({ title }),
     });
     const updatedColumn = await response.json();
 

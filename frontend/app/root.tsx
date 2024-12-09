@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunction, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { ClerkApp, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
 import { ptBR } from "@clerk/localizations";
@@ -54,6 +54,17 @@ export async function loader(args: LoaderFunctionArgs) {
       columns,
     };
   });
+}
+
+export const action: ActionFunction = async ({request}) => {
+  const formData = await request.formData();
+
+  const title = formData.get("columnTitle") as string;
+  const id = formData.get("columnId") as string;
+
+  const column = await ApiService.getInstance().updateColumn(id,title);
+
+  return column;
 }
 
 export const links: LinksFunction = () => [
