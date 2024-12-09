@@ -5,11 +5,11 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useState } from "react";
 import Task from "~/interfaces/Task";
 import KanbanColumn from "./kanban-column";
-import { tasks0, tasks1, tasks2, tasks3 } from "~/data";
-import Column from "~/interfaces/Column";
+import { NavLink } from "@remix-run/react";
+import { Button } from "../ui/button";
+import useColumns from "~/hooks/useColumns";
 
 export default function Kanban() {
   // TODO: add sensor for touch devices
@@ -19,12 +19,7 @@ export default function Kanban() {
     })
   );
 
-  const [columns, setColumns] = useState<Column[]>([
-    { id: "1", title: "ToDo", tasks: tasks0 },
-    { id: "2", title: "Done", tasks: tasks1 },
-    { id: "3", title: "In Progress", tasks: tasks2 },
-    { id: "4", title: "Unassigned", tasks: tasks3 },
-  ]);
+  const { columns, setColumns } = useColumns();
 
   // const addNewCard = (title: string) => {
   //   setItems([...items, { title, description: "", priority: Priority.Low }]);
@@ -67,12 +62,14 @@ export default function Kanban() {
       }}
     >
       <div className="flex flex-col">
-        <button>Adicionar</button>
         <div className="flex">
           {columns.map((column) => (
             <KanbanColumn column={column} key={column.id} />
           ))}
         </div>
+        <NavLink to="/columns/new">
+          <Button type="submit">Adicionar coluna</Button>
+        </NavLink>
       </div>
     </DndContext>
   );

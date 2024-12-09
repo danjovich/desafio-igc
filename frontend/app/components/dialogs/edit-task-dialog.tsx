@@ -16,14 +16,19 @@ import Priority from "~/interfaces/Priority";
 import Editor from "../editor";
 import { useEffect, useState } from "react";
 
-interface CardDialogContentProps {
-  task: Task;
+interface EditTaskDialogContentProps {
+  task: Task | null;
 }
 
-export default function CardDialogContent({
-  task: defaultTask,
-}: CardDialogContentProps) {
-  const [task, setTask] = useState(defaultTask);
+export default function EditTaskDialog({ task: defaultTask }: EditTaskDialogContentProps) {
+  const [task, setTask] = useState(defaultTask ?? {
+    id: "",
+    title: "",
+    description: "",
+    priority: Priority.Low,
+    responsible: null,
+    columnId: "",
+  });
 
   useEffect(() => {
     console.log(task.description);

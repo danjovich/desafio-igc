@@ -7,7 +7,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { ClerkApp } from "@clerk/remix";
+import { ClerkApp, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
 import { ptBR } from "@clerk/localizations";
 
@@ -15,19 +15,38 @@ import "./tailwind.css";
 import { themeSessionResolver } from "./sessions.server";
 import {
   PreventFlashOnWrongTheme,
+  Theme,
   ThemeProvider,
   useTheme,
 } from "remix-themes";
 import clsx from "clsx";
+import ApiService from "./services/ApiService";
+import ModeToggle from "./components/mode-toggle";
+import Kanban from "./components/kanban/kanban";
+import { ColumnsContextProvider } from "./contexts/columns-context";
+
+interface LoaderData {
+  theme: Theme | null;
+  env: Record<string, string | undefined>;
+}
 
 export async function loader(args: LoaderFunctionArgs) {
   // clerk auth
   return rootAuthLoader(args, async ({ request }) => {
+    const { userId, getToken } = request.auth;
+
+    if (userId) {
+      ApiService.getTokenFunction = async () => await getToken();
+    }
     // Returns the theme from the session storage
     const { getTheme } = await themeSessionResolver(request);
 
     return {
       theme: getTheme(),
+      env: {
+        // for allowing the client side to access the API_URL
+        API_URL: process.env.API_URL,
+      },
     };
   });
 }
@@ -46,7 +65,7 @@ export const links: LinksFunction = () => [
 ];
 
 export function App() {
-  const data = useLoaderData<typeof loader>();
+  const data: LoaderData = useLoaderData<typeof loader>();
   const [theme] = useTheme();
 
   return (
@@ -59,22 +78,45 @@ export function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div className="flex justify-center min-h-screen -z-10">
+          <ModeToggle />
+
+          <SignedIn>
+            <Kanban />
+            <Outlet />
+          </SignedIn>
+
+          <SignedOut>
+            <p>Você não está logado!</p>
+
+            <SignInButton>Fazer Login</SignInButton>
+          </SignedOut>
+        </div>
+
         <ScrollRestoration />
+        <script
+          // as weird as this is, it is recommended by the docs
+          dangerouslySetInnerHTML={{
+            __html: `window.env = ${JSON.stringify(data.env)}`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
   );
 }
 
-// Wraps the app with ThemeProvider for allowing change themes.
-// `specifiedTheme` is the stored theme in the session storage.
-// `themeAction` is the action name that's used to change the theme in the session storage.
 function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
   return (
+    // Wraps the app with ThemeProvider for allowing change themes.
+    // `specifiedTheme` is the stored theme in the session storage.
+    // `themeAction` is the action name that's used to change the theme in the session storage.
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
-      <App />
+      {/* provider for columns  */}
+      <ColumnsContextProvider>
+        <App />
+      </ColumnsContextProvider>
     </ThemeProvider>
   );
 }
