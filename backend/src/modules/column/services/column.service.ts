@@ -85,8 +85,6 @@ export class ColumnService {
     updatedColumnId: string,
   ): Promise<void> {
     if (previousColumnId !== updatedColumnId) {
-      console.log('updatedColumnId', updatedColumnId);
-      console.log('previousColumnId', previousColumnId);
       await this.prisma.taskHistory.create({
         data: {
           taskId,
