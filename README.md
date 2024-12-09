@@ -6,6 +6,7 @@
   - [ ] Kanban
     - [x] Colunas dinâmicas
     - [ ] Títulos de colunas editáveis
+    - [ ] Excluir colunas
     - [x] *Drag And Drop*
     - [x] Clicar para abrir edição da tarefa
     - [x] Criar novos cards
