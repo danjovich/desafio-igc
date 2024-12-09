@@ -7,10 +7,11 @@ import {
 } from "@dnd-kit/core";
 import Task from "~/interfaces/Task";
 import KanbanColumn from "./kanban-column";
-import { NavLink } from "@remix-run/react";
+import { NavLink, useFetcher } from "@remix-run/react";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Column from "~/interfaces/Column";
+import { Input } from "../ui/input";
 
 interface KanbanProps {
   columns: Column[];
@@ -30,9 +31,14 @@ export default function Kanban({ columns }: KanbanProps) {
     setInternalColumns(columns);
   }, [columns]);
 
-  // const addNewCard = (title: string) => {
-  //   setItems([...items, { title, description: "", priority: Priority.Low }]);
-  // };
+  const columnsWithIds = internalColumns.map((column, index) => ({
+    ...column,
+    index: index,
+  }));
+
+  const columnsRef = useRef<HTMLInputElement>(null);
+  const changeColumnsRef = useRef<HTMLInputElement>(null);
+  const fetcher = useFetcher();
 
   return (
     <DndContext
@@ -66,16 +72,33 @@ export default function Kanban({ columns }: KanbanProps) {
         });
 
         setInternalColumns(newItems);
+        if (columnsRef.current) {
+          columnsRef.current.value = JSON.stringify(newItems);
+        }
+        changeColumnsRef.current?.click();
       }}
     >
       <div className="flex flex-col w-fit">
+        <fetcher.Form method="patch">
+          <Input
+            ref={columnsRef}
+            className="hidden"
+            name="columns"
+            readOnly
+            defaultValue={JSON.stringify(internalColumns)}
+          />
+          <Input ref={changeColumnsRef} type="submit" className="hidden" />
+        </fetcher.Form>
         <div className="flex">
-          {internalColumns.map((column) => (
-            <KanbanColumn column={column} key={column.id} />
+          {columnsWithIds.map((column) => (
+            <KanbanColumn
+              column={column}
+              key={column.index.toString() + column.id}
+            />
           ))}
         </div>
         <NavLink to="/columns/new" className="flex justify-center mt-3">
-          <Button type="submit">Adicionar coluna</Button>
+          <Button>Adicionar coluna</Button>
         </NavLink>
       </div>
     </DndContext>

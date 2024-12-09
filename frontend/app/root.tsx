@@ -6,7 +6,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type { ActionFunction, LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
 import { ClerkApp, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
 import { ptBR } from "@clerk/localizations";
@@ -27,7 +31,6 @@ import Column from "./interfaces/Column";
 
 interface LoaderData {
   theme: Theme | null;
-  env: Record<string, string | undefined>;
   columns: Column[];
 }
 
@@ -47,25 +50,35 @@ export async function loader(args: LoaderFunctionArgs) {
 
     return {
       theme: getTheme(),
-      env: {
-        // for allowing the client side to access the API_URL
-        API_URL: process.env.API_URL,
-      },
       columns,
     };
   });
 }
 
-export const action: ActionFunction = async ({request}) => {
+export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
+
+  const columnsString = formData.get("columns") as string;
+
+  if (columnsString) {
+    const columns = JSON.parse(columnsString);
+
+    return await ApiService.getInstance().updateColumns(columns);
+  }
 
   const title = formData.get("columnTitle") as string;
   const id = formData.get("columnId") as string;
+  const del = formData.get("delete") as string | null;
 
-  const column = await ApiService.getInstance().updateColumn(id,title);
+  if (del) {
+    await ApiService.getInstance().deleteColumn(id);
+    return null;
+  } else {
+    const column = await ApiService.getInstance().updateColumn(id, title);
 
-  return column;
-}
+    return column;
+  }
+};
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -96,7 +109,7 @@ export function App() {
         <Links />
       </head>
       <body>
-        <div className="flex justify-center min-h-screen -z-10 w-fit overflow-scroll">
+        <div className="flex justify-center min-h-screen -z-10 w-full overflow-scroll">
           <ModeToggle />
 
           <SignedIn>
@@ -112,12 +125,6 @@ export function App() {
         </div>
 
         <ScrollRestoration />
-        <script
-          // as weird as this is, it is recommended by the docs
-          dangerouslySetInnerHTML={{
-            __html: `window.env = ${JSON.stringify(data.env)}`,
-          }}
-        />
         <Scripts />
       </body>
     </html>
@@ -131,7 +138,7 @@ function AppWithProviders() {
     // `specifiedTheme` is the stored theme in the session storage.
     // `themeAction` is the action name that's used to change the theme in the session storage.
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
-        <App />
+      <App />
     </ThemeProvider>
   );
 }

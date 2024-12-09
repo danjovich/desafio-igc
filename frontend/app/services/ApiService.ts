@@ -64,6 +64,20 @@ export default class ApiService {
     return updatedColumn;
   }
 
+  async updateColumns(columns: Column[]): Promise<Column[]> {
+    const response = await fetch(`${this.apiUrl}/columns`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${await ApiService.getToken?.()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(columns),
+    });
+    const updatedColumns = await response.json();
+
+    return updatedColumns;
+  }
+
   async deleteColumn(columnId: string): Promise<void> {
     await fetch(`${this.apiUrl}/columns/${columnId}`, {
       method: "DELETE",

@@ -3,10 +3,10 @@
 ## Progresso
 
 - [ ] Frontend
-  - [ ] Kanban
+  - [x] Kanban
     - [x] Colunas dinâmicas
     - [x] Títulos de colunas editáveis
-    - [ ] Excluir colunas
+    - [x] Excluir colunas
     - [x] *Drag And Drop*
     - [x] Clicar para abrir edição da tarefa
     - [x] Criar novos cards
@@ -25,6 +25,8 @@
     - [ ] Edição simultânea
   - [ ] Rever estilização
   - [ ] Responsividade
+    - [ ] Botão de excluir coluna não aparece no mobile
+    - [ ] Edição de cards ruim no mobile
 - [ ] Backend
   - [x] Tabela de colunas
     - [x] Criação
