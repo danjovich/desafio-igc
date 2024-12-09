@@ -4,11 +4,11 @@
 
 - [ ] Frontend
   - [ ] Kanban
-    - [ ] Colunas dinâmicas
+    - [x] Colunas dinâmicas
     - [ ] Títulos de colunas editáveis
     - [x] *Drag And Drop*
     - [x] Clicar para abrir edição da tarefa
-    - [ ] Criar novos cards
+    - [x] Criar novos cards
   - [ ] Tarefas
     - [x] Título editável
     - [x] Descrição editável 
@@ -37,4 +37,15 @@
   - [ ] Histórico de edição das tasks
   - [ ] Verificar existência de usuários do Clerk
   - [x] Autenticação
-  - [ ] Testes (?)
+- [ ] Documentação
+  - [ ] Explicar escolha das tecnologias
+    - [ ] Remix
+    - [ ] Shadcn
+    - [ ] NestJS
+    - [ ] Clerk
+    - [ ] Prisma
+    - [ ] SQLite
+    - [ ] DnD-kit
+    - [ ] TipTap
+  - [ ] Explicar como Remix lida com estados
+  - [ ] Explicar os próximos passos
