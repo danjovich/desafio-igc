@@ -15,7 +15,7 @@
     - [x] Descrição editável 
     - [x] Descrição com editor *rich text*
     - [x] Prioridade editável
-    - [ ] Atribuição editável
+    - [x] Atribuição editável
     - [x] Excluir
     - [x] Mostrar histórico de alterações
     - [ ] Melhorar estilização
@@ -38,7 +38,6 @@
     - [x] Edição
   - [x] Histórico de movimentação dos cards
   - [x] Histórico de edição das tasks
-  - [ ] Verificar existência de usuários do Clerk
   - [x] Autenticação
 - [ ] Documentação
   - [ ] Explicar escolha das tecnologias
