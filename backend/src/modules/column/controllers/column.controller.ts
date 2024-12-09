@@ -5,12 +5,14 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { ColumnService } from '../services/column.service';
 import CreateColumnDTO from '../dtos/CreateColumnDTO';
 import UpdateColumnDTO from '../dtos/UpdateColumnDTO';
+import { Column, Task } from '@prisma/client';
 
 @Controller('columns')
 export class ColumnController {
@@ -34,6 +36,11 @@ export class ColumnController {
     @Body() { title }: UpdateColumnDTO,
   ) {
     return this.columnService.updateColumn(id, { title });
+  }
+
+  @Patch()
+  async updateColumns(@Body() data: (Column & { tasks: Task[] })[]) {
+    return this.columnService.updateColumns(data);
   }
 
   @Delete(':id')

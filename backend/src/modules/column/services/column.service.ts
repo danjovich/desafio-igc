@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Column } from '@prisma/client';
+import { Column, Task } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
 import CreateColumnDTO from '../dtos/CreateColumnDTO';
 import UpdateColumnDTO from '../dtos/UpdateColumnDTO';
@@ -43,6 +43,48 @@ export class ColumnService {
       },
       data,
     });
+  }
+
+  async updateColumns(data: (Column & { tasks: Task[] })[]): Promise<Column[]> {
+    const columns = await this.prisma.column.findMany({
+      where: {
+        id: {
+          in: data.map((column) => column.id),
+        },
+      },
+    });
+
+    if (columns.length !== data.length) {
+      throw new NotFoundException('Column not found');
+    }
+
+    const updatedColumns: Column[] = [];
+
+    for (const columnData of data) {
+      const { tasks, ...columnDataWithoutTasks } = columnData;
+
+      const column = await this.prisma.column.update({
+        where: {
+          id: columnData.id,
+        },
+        data: columnDataWithoutTasks,
+      });
+
+      for (const task of tasks) {
+        await this.prisma.task.update({
+          where: {
+            id: task.id,
+          },
+          data: {
+            columnId: column.id,
+          },
+        });
+      }
+
+      updatedColumns.push(column);
+    }
+
+    return updatedColumns;
   }
 
   async deleteColumn(id: string): Promise<Column> {
