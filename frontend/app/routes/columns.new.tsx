@@ -22,7 +22,7 @@ export default function NewColumn() {
 
   return (
     <Dialog defaultOpen modal onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="w-fit">
         <NewColumnDialog />
       </DialogContent>
     </Dialog>
