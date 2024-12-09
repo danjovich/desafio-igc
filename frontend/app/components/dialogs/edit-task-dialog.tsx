@@ -15,6 +15,8 @@ import {
 import Priority from "~/interfaces/Priority";
 import Editor from "../editor";
 import { useEffect, useState } from "react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { DialogHeader } from "../ui/dialog";
 
 interface EditTaskDialogContentProps {
   task: Task | null;
@@ -35,63 +37,69 @@ export default function EditTaskDialog({ task: defaultTask }: EditTaskDialogCont
   }, [task]);
 
   return (
-    <Form method="post">
-      <Label>Título</Label>
-      <Input
-        type="text"
-        name="title"
-        defaultValue={task.title}
-        onChange={(e) => setTask({ ...task, title: e.target.value })}
-      />
+    <div className="w-fit">
+      <DialogHeader>
+        <DialogTitle>Editar tarefa</DialogTitle>
+      </DialogHeader>
 
-      <Label>Descrição</Label>
-      <input type="hidden" name="description" defaultValue={task.description} />
-      <Editor
-        content={task.description}
-        onChange={(v) => setTask({ ...task, description: v })}
-      />
+      <Form className="grid gap-4 py-4" method="put">
+        <Label>Título</Label>
+        <Input
+          type="text"
+          name="title"
+          defaultValue={task.title}
+          onChange={(e) => setTask({ ...task, title: e.target.value })}
+        />
 
-      <Label>Prioridade</Label>
-      <Select
-        name="priority"
-        value={task.priority}
-        onValueChange={(v) => setTask({ ...task, priority: v as Priority })}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Selecione a prioridade" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Prioridades</SelectLabel>
-            <SelectItem value={Priority.Low}>Baixa</SelectItem>
-            <SelectItem value={Priority.Medium}>Média</SelectItem>
-            <SelectItem value={Priority.High}>Alta</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        <Label htmlFor="description">Descrição</Label>
+        <Input type="hidden" name="description" value={task.description} />
+        <Editor
+          content={task.description}
+          onChange={(v) => setTask({ ...task, description: v })}
+        />
 
-      <Label>Responsável</Label>
-      <Select
-        name="responsible"
-        value={task.responsible?.name}
-        // TODO: update user
-        onValueChange={() => setTask({ ...task })}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Selecione o responsável" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Usuários</SelectLabel>
-            {["John Doe", "Jane Doe", "John Smith"].map((name) => (
-              <SelectItem key={name} value={name}>
-                {name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Button type="submit">Save</Button>
-    </Form>
+        <Label htmlFor="priority">Prioridade</Label>
+        <Select
+          name="priority"
+          value={task.priority}
+          onValueChange={(v) => setTask({ ...task, priority: v as Priority })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione a prioridade" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Prioridades</SelectLabel>
+              <SelectItem value={Priority.Low}>Baixa</SelectItem>
+              <SelectItem value={Priority.Medium}>Média</SelectItem>
+              <SelectItem value={Priority.High}>Alta</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <Label htmlFor="responsible">Responsável</Label>
+        <Select
+          name="responsible"
+          value={task.responsible?.name}
+          // TODO: update user
+          onValueChange={() => setTask({ ...task })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione o responsável" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Usuários</SelectLabel>
+              {["John Doe", "Jane Doe", "John Smith"].map((name) => (
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button type="submit">Salvar</Button>
+      </Form>
+    </div>
   );
 }

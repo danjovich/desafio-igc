@@ -1,6 +1,9 @@
 import Column from "~/interfaces/Column";
 import Task from "~/interfaces/Task";
 
+type CreateTask = Omit<Task, "id" | "responsible"> & { responsible?: string };
+type UpdateTask = Partial<CreateTask> & { id: string };
+
 export default class ApiService {
   private static instance: ApiService;
 
@@ -70,7 +73,7 @@ export default class ApiService {
     });
   }
 
-  async createTask(task: Task): Promise<Task> {
+  async createTask(task: CreateTask): Promise<Task> {
     const response = await fetch(`${this.apiUrl}/tasks`, {
       method: "POST",
       headers: {
@@ -106,7 +109,7 @@ export default class ApiService {
     return task;
   }
 
-  async updateTask(task: Task): Promise<Task> {
+  async updateTask(task: UpdateTask): Promise<Task> {
     const response = await fetch(`${this.apiUrl}/tasks/${task.id}`, {
       method: "PUT",
       headers: {

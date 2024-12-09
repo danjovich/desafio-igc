@@ -15,4 +15,10 @@ body {
   :root {
     --radius: 0.5rem;
   }
+
+  /* Revert Tailwind default changes */
+  ul, ol, blockquote {
+    list-style: revert;
+    margin-left: 12px;
+  }
 }
