@@ -50,6 +50,67 @@ export class TaskService {
     return task;
   }
 
+  private async updateTaskHistory(
+    taskId: string,
+    previousTask: Task,
+    updatedTask: Task,
+  ): Promise<void> {
+    if (previousTask.columnId !== updatedTask.columnId) {
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'columnId',
+          oldValue: previousTask.columnId,
+          newValue: updatedTask.columnId,
+        },
+      });
+    }
+
+    if (previousTask.priority !== updatedTask.priority) {
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'priority',
+          oldValue: previousTask.priority,
+          newValue: updatedTask.priority,
+        },
+      });
+    }
+
+    if (previousTask.responsible !== updatedTask.responsible) {
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'responsible',
+          oldValue: previousTask.responsible,
+          newValue: updatedTask.responsible,
+        },
+      });
+    }
+
+    if (previousTask.title !== updatedTask.title) {
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'title',
+          oldValue: previousTask.title,
+          newValue: updatedTask.title,
+        },
+      });
+    }
+
+    if (previousTask.description !== updatedTask.description) {
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'description',
+          oldValue: previousTask.description,
+          newValue: updatedTask.description,
+        },
+      });
+    }
+  }
+
   async updateTask(id: string, data: UpdateTaskDTO): Promise<Task> {
     const task = await this.prisma.task.findUnique({ where: { id } });
 
@@ -61,12 +122,16 @@ export class TaskService {
       throw new BadRequestException(`Invalid priority ${data.priority}`);
     }
 
-    return this.prisma.task.update({
+    const updatedTask = await this.prisma.task.update({
       where: {
         id,
       },
       data,
     });
+
+    await this.updateTaskHistory(id, task, updatedTask);
+
+    return updatedTask;
   }
 
   async deleteTask(id: string): Promise<Task> {

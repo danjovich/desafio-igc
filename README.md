@@ -36,8 +36,8 @@
     - [x] Criação
     - [x] Exclusão
     - [x] Edição
-  - [ ] Histórico de movimentação dos cards
-  - [ ] Histórico de edição das tasks
+  - [x] Histórico de movimentação dos cards
+  - [x] Histórico de edição das tasks
   - [ ] Verificar existência de usuários do Clerk
   - [x] Autenticação
 - [ ] Documentação

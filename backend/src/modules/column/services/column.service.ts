@@ -37,12 +37,54 @@ export class ColumnService {
       throw new NotFoundException('Column not found');
     }
 
-    return this.prisma.column.update({
+    const updatedColumn = await this.prisma.column.update({
       where: {
         id,
       },
       data,
     });
+
+    const previousColumn = column;
+
+    await this.updateColumnHistory(id, previousColumn, updatedColumn);
+
+    return updatedColumn;
+  }
+
+  private async updateColumnHistory(
+    columnId: string,
+    previousColumn: Column,
+    updatedColumn: Column,
+  ): Promise<void> {
+    if (previousColumn.title !== updatedColumn.title) {
+      await this.prisma.columnHistory.create({
+        data: {
+          columnId,
+          changedField: 'title',
+          oldValue: previousColumn.title,
+          newValue: updatedColumn.title,
+        },
+      });
+    }
+  }
+
+  private async updateTaskHistory(
+    taskId: string,
+    previousColumnId: string,
+    updatedColumnId: string,
+  ): Promise<void> {
+    if (previousColumnId !== updatedColumnId) {
+      console.log('updatedColumnId', updatedColumnId);
+      console.log('previousColumnId', previousColumnId);
+      await this.prisma.taskHistory.create({
+        data: {
+          taskId,
+          changedField: 'columnId',
+          oldValue: previousColumnId,
+          newValue: updatedColumnId,
+        },
+      });
+    }
   }
 
   async updateColumns(data: (Column & { tasks: Task[] })[]): Promise<Column[]> {
@@ -70,15 +112,33 @@ export class ColumnService {
         data: columnDataWithoutTasks,
       });
 
+      const previousColumn = columns.find((c) => c.id === column.id);
+
+      if (previousColumn) {
+        await this.updateColumnHistory(column.id, previousColumn, column);
+      }
+
       for (const task of tasks) {
-        await this.prisma.task.update({
-          where: {
-            id: task.id,
-          },
-          data: {
-            columnId: column.id,
-          },
+        const previousTask = await this.prisma.task.findUnique({
+          where: { id: task.id },
         });
+
+        if (previousTask) {
+          await this.prisma.task.update({
+            where: {
+              id: task.id,
+            },
+            data: {
+              columnId: column.id,
+            },
+          });
+
+          await this.updateTaskHistory(
+            task.id,
+            previousTask.columnId,
+            column.id,
+          );
+        }
       }
 
       updatedColumns.push(column);
