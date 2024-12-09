@@ -20,7 +20,7 @@
     - [ ] Mostrar histórico de alterações
     - [ ] Melhorar estilização
   - [ ] Autenticação
-    - [ ] Página inicial para usuários não autenticados
+    - [x] Página inicial para usuários não autenticados
     - [x] Gerenciamento de autenticação com o Clerk
     - [ ] Edição simultânea
   - [ ] Rever estilização

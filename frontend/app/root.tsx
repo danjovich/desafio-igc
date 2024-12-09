@@ -11,7 +11,13 @@ import type {
   LinksFunction,
   LoaderFunctionArgs,
 } from "@remix-run/node";
-import { ClerkApp, SignedIn, SignedOut, SignInButton } from "@clerk/remix";
+import {
+  ClerkApp,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+} from "@clerk/remix";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
 import { ptBR } from "@clerk/localizations";
 
@@ -28,6 +34,8 @@ import ApiService from "./services/ApiService";
 import ModeToggle from "./components/mode-toggle";
 import Kanban from "./components/kanban/kanban";
 import Column from "./interfaces/Column";
+import { KanbanIcon } from "lucide-react";
+import { Button } from "./components/ui/button";
 
 interface LoaderData {
   theme: Theme | null;
@@ -109,18 +117,44 @@ export function App() {
         <Links />
       </head>
       <body>
-        <div className="flex justify-center min-h-screen -z-10 w-full overflow-scroll">
-          <ModeToggle />
+        <header>
+          <nav className="bg-slate-300 border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-slate-800">
+            <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+              <a href="/" className="flex items-center">
+                <KanbanIcon className="mr-3 h-6 sm:h-9" />
+                <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+                  Kanban
+                </span>
+              </a>
+              <div className="flex items-center lg:order-2">
+                <ModeToggle />
+                <SignedIn>
+                  <SignOutButton>
+                    <Button className="ml-2">Sair</Button>
+                  </SignOutButton>
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton>
+                    <Button className="ml-2">Fazer Login</Button>
+                  </SignInButton>
+                </SignedOut>
+              </div>
+            </div>
+          </nav>
+        </header>
 
+        <div className="flex justify-center min-h-screen -z-10 w-full overflow-scroll">
           <SignedIn>
             <Kanban columns={data.columns} />
             <Outlet />
           </SignedIn>
 
           <SignedOut>
-            <p>Você não está logado!</p>
-
-            <SignInButton>Fazer Login</SignInButton>
+            <div className="flex flex-col items-center">
+              <h1 className="text-5xl font-bold mt-4">Bem-vindo ao Kanban!</h1>
+              <p className="text-xl mt-4">Um Kanban colaborativo minimalista e fácil de usar.</p>
+              <img className="rounded-2xl mt-8" src="/screenshot.png" alt="Kanban" />
+            </div>
           </SignedOut>
         </div>
 
