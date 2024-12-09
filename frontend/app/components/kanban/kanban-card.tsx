@@ -22,7 +22,7 @@ export default function KanbanCard({ task }: KanbanCardProps) {
 
   return (
     <Card
-      onClickCapture={() => navigate(`/tasks/${task.id}`)}
+      onClick={() => navigate(`/tasks/${task.id}`)}
       {...listeners}
       {...attributes}
       ref={setNodeRef}

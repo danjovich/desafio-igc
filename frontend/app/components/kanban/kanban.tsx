@@ -9,17 +9,26 @@ import Task from "~/interfaces/Task";
 import KanbanColumn from "./kanban-column";
 import { NavLink } from "@remix-run/react";
 import { Button } from "../ui/button";
-import useColumns from "~/hooks/useColumns";
+import { useEffect, useState } from "react";
+import Column from "~/interfaces/Column";
 
-export default function Kanban() {
+interface KanbanProps {
+  columns: Column[];
+}
+
+export default function Kanban({ columns }: KanbanProps) {
   // TODO: add sensor for touch devices
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { delay: 0, distance: 0, tolerance: 0 },
+      activationConstraint: { delay: 100, distance: 1 },
     })
   );
 
-  const { columns, setColumns } = useColumns();
+  const [internalColumns, setInternalColumns] = useState(columns);
+
+  useEffect(() => {
+    setInternalColumns(columns);
+  }, [columns]);
 
   // const addNewCard = (title: string) => {
   //   setItems([...items, { title, description: "", priority: Priority.Low }]);
@@ -39,7 +48,7 @@ export default function Kanban() {
 
         task.columnId = newColumnId as string;
 
-        const newItems = columns.map((column) => {
+        const newItems = internalColumns.map((column) => {
           if (column.id === newColumnId) {
             // adds the task to the new column
             return {
@@ -56,14 +65,12 @@ export default function Kanban() {
           return column;
         });
 
-        console.log(newItems);
-
-        setColumns(newItems);
+        setInternalColumns(newItems);
       }}
     >
       <div className="flex flex-col">
         <div className="flex">
-          {columns.map((column) => (
+          {internalColumns.map((column) => (
             <KanbanColumn column={column} key={column.id} />
           ))}
         </div>

@@ -1,17 +1,10 @@
 import Column from "~/interfaces/Column";
 import Task from "~/interfaces/Task";
-import { serverOnly$, clientOnly$ } from "vite-env-only/macros";
 
 export default class ApiService {
   private static instance: ApiService;
 
-  private constructor() {
-    this.apiUrl =
-      serverOnly$(process.env.API_URL) ||
-      clientOnly$((window as unknown as { env: Record<string, string> })?.env)
-        ?.API_URL ||
-      this.apiUrl;
-  }
+  private constructor() {}
 
   static getInstance(): ApiService {
     if (!ApiService.instance) {
@@ -27,7 +20,7 @@ export default class ApiService {
     ApiService.getToken = fn;
   }
 
-  private apiUrl = "http://localhost:3000";
+  private apiUrl = process.env.API_URL || "http://localhost:3000";
 
   async createColumn(title: string): Promise<Column> {
     const response = await fetch(`${this.apiUrl}/columns`, {

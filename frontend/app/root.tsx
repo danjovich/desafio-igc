@@ -23,11 +23,12 @@ import clsx from "clsx";
 import ApiService from "./services/ApiService";
 import ModeToggle from "./components/mode-toggle";
 import Kanban from "./components/kanban/kanban";
-import { ColumnsContextProvider } from "./contexts/columns-context";
+import Column from "./interfaces/Column";
 
 interface LoaderData {
   theme: Theme | null;
   env: Record<string, string | undefined>;
+  columns: Column[];
 }
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -35,8 +36,11 @@ export async function loader(args: LoaderFunctionArgs) {
   return rootAuthLoader(args, async ({ request }) => {
     const { userId, getToken } = request.auth;
 
+    let columns: Column[] = [];
     if (userId) {
       ApiService.getTokenFunction = async () => await getToken();
+
+      columns = await ApiService.getInstance().fetchColumns();
     }
     // Returns the theme from the session storage
     const { getTheme } = await themeSessionResolver(request);
@@ -47,6 +51,7 @@ export async function loader(args: LoaderFunctionArgs) {
         // for allowing the client side to access the API_URL
         API_URL: process.env.API_URL,
       },
+      columns,
     };
   });
 }
@@ -68,6 +73,8 @@ export function App() {
   const data: LoaderData = useLoaderData<typeof loader>();
   const [theme] = useTheme();
 
+  // const { columns } = useColumns();
+
   return (
     <html lang="en" className={clsx(theme)}>
       <head>
@@ -82,7 +89,7 @@ export function App() {
           <ModeToggle />
 
           <SignedIn>
-            <Kanban />
+            <Kanban columns={data.columns} />
             <Outlet />
           </SignedIn>
 
@@ -113,10 +120,7 @@ function AppWithProviders() {
     // `specifiedTheme` is the stored theme in the session storage.
     // `themeAction` is the action name that's used to change the theme in the session storage.
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
-      {/* provider for columns  */}
-      <ColumnsContextProvider>
         <App />
-      </ColumnsContextProvider>
     </ThemeProvider>
   );
 }
