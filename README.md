@@ -20,22 +20,21 @@
     - [ ] Melhorar estilização
   - [ ] Autenticação
     - [ ] Página inicial para usuários não autenticados
-    - [ ] Gerenciamento de autenticação com o Clerk
+    - [x] Gerenciamento de autenticação com o Clerk
     - [ ] Edição simultânea
   - [ ] Rever estilização
   - [ ] Responsividade
 - [ ] Backend
-  - [ ] Tabela de colunas
-    - [ ] Criação
-    - [ ] Exclusão
-    - [ ] Edição
-  - [ ] Tabela de tarefas
-    - [ ] Criação
-    - [ ] Exclusão
-    - [ ] Edição
-    - [ ] Histórico
+  - [x] Tabela de colunas
+    - [x] Criação
+    - [x] Exclusão
+    - [x] Edição
+  - [x] Tabela de tarefas
+    - [x] Criação
+    - [x] Exclusão
+    - [x] Edição
   - [ ] Histórico de movimentação dos cards
-    - [ ] "Excluir" coluna só a oculta do frontend
-  - [ ] Tabela de usuários
-    - [ ] Criação
-  - [ ] Autenticação
+  - [ ] Histórico de edição das tasks
+  - [ ] Verificar existência de usuários do Clerk
+  - [x] Autenticação
+  - [ ] Testes (?)
