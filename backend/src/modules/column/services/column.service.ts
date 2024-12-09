@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Column } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
 import CreateColumnDTO from '../dtos/CreateColumnDTO';
@@ -18,9 +18,6 @@ export class ColumnService {
     (Column & { tasks: { id: string; title: string }[] })[]
   > {
     return this.prisma.column.findMany({
-      where: {
-        deleted: false,
-      },
       include: {
         tasks: {
           select: {
@@ -33,6 +30,12 @@ export class ColumnService {
   }
 
   async updateColumn(id: string, data: UpdateColumnDTO): Promise<Column> {
+    const column = await this.prisma.column.findUnique({ where: { id } });
+
+    if (!column) {
+      throw new NotFoundException('Column not found');
+    }
+
     return this.prisma.column.update({
       where: {
         id,
@@ -42,12 +45,15 @@ export class ColumnService {
   }
 
   async deleteColumn(id: string): Promise<Column> {
-    return this.prisma.column.update({
+    const column = await this.prisma.column.findUnique({ where: { id } });
+
+    if (!column) {
+      throw new NotFoundException('Column not found');
+    }
+
+    return this.prisma.column.delete({
       where: {
         id,
-      },
-      data: {
-        deleted: true,
       },
     });
   }

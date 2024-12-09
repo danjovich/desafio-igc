@@ -23,7 +23,6 @@ model Column {
   id        String   @id @default(uuid())
   title     String
   tasks     Task[]
-  deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

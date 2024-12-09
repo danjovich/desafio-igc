@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -36,7 +37,8 @@ export class ColumnController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async deleteColumn(@Param('id') id: string) {
-    return this.columnService.deleteColumn(id);
+    await this.columnService.deleteColumn(id);
   }
 }
