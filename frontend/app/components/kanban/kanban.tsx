@@ -68,7 +68,7 @@ export default function Kanban({ columns }: KanbanProps) {
         setInternalColumns(newItems);
       }}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col w-fit">
         <div className="flex">
           {internalColumns.map((column) => (
             <KanbanColumn column={column} key={column.id} />

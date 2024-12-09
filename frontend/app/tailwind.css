@@ -5,10 +5,14 @@
 html,
 body {
   @apply bg-white dark:bg-gray-950;
+  @apply text-gray-950 dark:text-white;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+
+  width: fit-content;
+  min-width: 100vw;
 }
 
 @layer base {

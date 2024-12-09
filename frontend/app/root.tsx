@@ -85,7 +85,7 @@ export function App() {
         <Links />
       </head>
       <body>
-        <div className="flex justify-center min-h-screen -z-10">
+        <div className="flex justify-center min-h-screen -z-10 w-fit overflow-scroll">
           <ModeToggle />
 
           <SignedIn>
