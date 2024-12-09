@@ -37,10 +37,14 @@ import Kanban from "./components/kanban/kanban";
 import Column from "./interfaces/Column";
 import { KanbanIcon } from "lucide-react";
 import { Button } from "./components/ui/button";
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import { SocketProvider } from "./contexts/socket-context";
 
 interface LoaderData {
   theme: Theme | null;
   columns: Column[];
+  socketUrl: string;
 }
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -60,6 +64,7 @@ export async function loader(args: LoaderFunctionArgs) {
     return {
       theme: getTheme(),
       columns,
+      socketUrl: process.env.API_URL || "http://localhost:3000",
     };
   });
 }
@@ -105,8 +110,6 @@ export const links: LinksFunction = () => [
 export function App() {
   const data: LoaderData = useLoaderData<typeof loader>();
   const [theme] = useTheme();
-
-  // const { columns } = useColumns();
 
   return (
     <html lang="en" className={clsx(theme)}>
@@ -177,12 +180,27 @@ export function App() {
 
 function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
+
+  const [socket, setSocket] = useState<Socket>();
+
+  useEffect(() => {
+    const socket = io(data.socketUrl);
+
+    setSocket(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, [data.socketUrl]);
+
   return (
     // Wraps the app with ThemeProvider for allowing change themes.
     // `specifiedTheme` is the stored theme in the session storage.
     // `themeAction` is the action name that's used to change the theme in the session storage.
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
-      <App />
+      <SocketProvider socket={socket}>
+        <App />
+      </SocketProvider>
     </ThemeProvider>
   );
 }

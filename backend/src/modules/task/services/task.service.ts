@@ -8,10 +8,15 @@ import { PrismaService } from 'src/shared/services/prisma.service';
 import CreateTaskDTO from '../dtos/CreateTaskDTO';
 import UpdateTaskDTO from '../dtos/UpdateTaskDTO';
 import Priority from '../enums/Priority';
+import { Socket } from 'socket.io-client';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 
 @Injectable()
+@WebSocketGateway({ cors: true })
 export class TaskService {
   constructor(private prisma: PrismaService) {}
+
+  @WebSocketServer() server: Socket;
 
   async createTask(data: CreateTaskDTO): Promise<Task> {
     if (!Object.values(Priority).includes(data.priority)) {
@@ -146,6 +151,8 @@ export class TaskService {
     });
 
     await this.updateTaskHistory(id, task, updatedTask);
+
+    this.server.emit('reload_task');
 
     return updatedTask;
   }

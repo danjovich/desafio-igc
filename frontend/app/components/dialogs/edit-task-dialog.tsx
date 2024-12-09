@@ -1,6 +1,6 @@
 import Task from "~/interfaces/Task";
 import { Input } from "../ui/input";
-import { Form, useFetcher } from "@remix-run/react";
+import { Form, useFetcher, useRevalidator } from "@remix-run/react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import {
@@ -14,7 +14,7 @@ import {
 } from "../ui/select";
 import Priority from "~/interfaces/Priority";
 import Editor from "../editor";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { DialogHeader } from "../ui/dialog";
 import Column from "~/interfaces/Column";
@@ -22,6 +22,7 @@ import { Edit, History, Trash } from "lucide-react";
 import TaskHistory from "~/interfaces/TaskHistory";
 import translateField from "~/utils/translateField";
 import formatDate from "~/utils/formatDate";
+import { useSocket } from "~/contexts/socket-context";
 
 interface EditTaskDialogContentProps {
   task: Task | null;
@@ -47,10 +48,27 @@ export default function EditTaskDialog({
     }
   );
 
+  useEffect(() => {
+    if (defaultTask) {
+      setTask(defaultTask);
+    }
+  }, [defaultTask]);
+
   const [showHistory, setShowHistory] = useState(false);
 
   const fetcher = useFetcher();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const socket = useSocket();
+  const revalidator = useRevalidator();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("reload_task", () => {
+      revalidator.revalidate();
+    });
+  }, [socket, revalidator]);
 
   return (
     <div className="w-fit max-h-screen overflow-y-scroll">
@@ -92,14 +110,16 @@ export default function EditTaskDialog({
                 {formatDate(new Date(history.createdAt))}
               </h3>
               <p>
-                {translateField(history.changedField as keyof Task)} alterado(a) de{" "}
-                &quot;{history.oldValue}&quot; para &quot;{history.newValue}
+                {translateField(history.changedField as keyof Task)} alterado(a)
+                de &quot;{history.oldValue}&quot; para &quot;{history.newValue}
                 &quot;
               </p>
             </div>
           ))
         ) : (
-          <p className="py-2 h-16 w-64 text-center">Nenhuma alteração registrada</p>
+          <p className="py-2 h-16 w-64 text-center">
+            Nenhuma alteração registrada
+          </p>
         )
       ) : (
         <Form className="grid gap-4 py-4" method="put">
@@ -107,7 +127,7 @@ export default function EditTaskDialog({
           <Input
             type="text"
             name="title"
-            defaultValue={task.title}
+            value={task.title}
             onChange={(e) => setTask({ ...task, title: e.target.value })}
           />
 
@@ -171,11 +191,12 @@ export default function EditTaskDialog({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Colunas</SelectLabel>
-                {columns.map(({ title, id }) => (
-                  <SelectItem key={id} value={id} textValue={title}>
-                    {title}
-                  </SelectItem>
-                ))}
+                {Array.isArray(columns) &&
+                  columns.map(({ title, id }) => (
+                    <SelectItem key={id} value={id} textValue={title}>
+                      {title}
+                    </SelectItem>
+                  ))}
               </SelectGroup>
             </SelectContent>
           </Select>
