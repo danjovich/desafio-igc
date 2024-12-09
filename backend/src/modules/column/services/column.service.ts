@@ -3,15 +3,24 @@ import { Column, Task } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
 import CreateColumnDTO from '../dtos/CreateColumnDTO';
 import UpdateColumnDTO from '../dtos/UpdateColumnDTO';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Socket } from 'socket.io-client';
 
 @Injectable()
+@WebSocketGateway({ cors: true })
 export class ColumnService {
   constructor(private prisma: PrismaService) {}
 
+  @WebSocketServer() server: Socket;
+
   async createColumn(data: CreateColumnDTO): Promise<Column> {
-    return this.prisma.column.create({
+    const columns = await this.prisma.column.create({
       data,
     });
+
+    this.server.emit('reload');
+
+    return columns;
   }
 
   async getColumns(): Promise<
@@ -47,6 +56,8 @@ export class ColumnService {
     const previousColumn = column;
 
     await this.updateColumnHistory(id, previousColumn, updatedColumn);
+
+    this.server.emit('reload');
 
     return updatedColumn;
   }
@@ -144,6 +155,8 @@ export class ColumnService {
       updatedColumns.push(column);
     }
 
+    this.server.emit('reload');
+
     return updatedColumns;
   }
 
@@ -153,6 +166,8 @@ export class ColumnService {
     if (!column) {
       throw new NotFoundException('Column not found');
     }
+
+    this.server.emit('reload');
 
     return this.prisma.column.delete({
       where: {

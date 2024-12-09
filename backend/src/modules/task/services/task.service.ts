@@ -23,9 +23,13 @@ export class TaskService {
       throw new BadRequestException(`Invalid priority ${data.priority}`);
     }
 
-    return this.prisma.task.create({
+    const createdTask = await this.prisma.task.create({
       data,
     });
+
+    this.server.emit('reload');
+
+    return createdTask;
   }
 
   async getTasks(): Promise<
@@ -152,7 +156,7 @@ export class TaskService {
 
     await this.updateTaskHistory(id, task, updatedTask);
 
-    this.server.emit('reload_task');
+    this.server.emit('reload');
 
     return updatedTask;
   }
@@ -163,6 +167,8 @@ export class TaskService {
     if (!task) {
       throw new NotFoundException('Task not found');
     }
+
+    this.server.emit('reload');
 
     return this.prisma.task.delete({
       where: {

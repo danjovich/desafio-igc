@@ -7,11 +7,12 @@ import {
 } from "@dnd-kit/core";
 import Task from "~/interfaces/Task";
 import KanbanColumn from "./kanban-column";
-import { NavLink, useFetcher } from "@remix-run/react";
+import { NavLink, useFetcher, useRevalidator } from "@remix-run/react";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
 import Column from "~/interfaces/Column";
 import { Input } from "../ui/input";
+import { useSocket } from "~/contexts/socket-context";
 
 interface KanbanProps {
   columns: Column[];
@@ -39,6 +40,17 @@ export default function Kanban({ columns }: KanbanProps) {
   const columnsRef = useRef<HTMLInputElement>(null);
   const changeColumnsRef = useRef<HTMLInputElement>(null);
   const fetcher = useFetcher();
+
+  const socket = useSocket();
+  const revalidator = useRevalidator();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("reload", () => {
+      revalidator.revalidate();
+    });
+  }, [socket, revalidator]);
 
   return (
     <DndContext

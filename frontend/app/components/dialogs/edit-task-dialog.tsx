@@ -65,7 +65,7 @@ export default function EditTaskDialog({
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("reload_task", () => {
+    socket.on("reload", () => {
       revalidator.revalidate();
     });
   }, [socket, revalidator]);

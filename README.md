@@ -19,10 +19,10 @@
     - [x] Excluir
     - [x] Mostrar histórico de alterações
     - [ ] Melhorar estilização
-  - [ ] Autenticação
+  - [x] Autenticação
     - [x] Página inicial para usuários não autenticados
     - [x] Gerenciamento de autenticação com o Clerk
-    - [ ] Edição simultânea
+    - [x] Edição simultânea
   - [ ] Rever estilização
   - [ ] Responsividade
     - [ ] Botão de excluir coluna não aparece no mobile
