@@ -23,6 +23,7 @@ export class ColumnService {
           select: {
             id: true,
             title: true,
+            columnId: true,
           },
         },
       },
