@@ -16,7 +16,7 @@
     - [x] Descrição com editor *rich text*
     - [x] Prioridade editável
     - [ ] Atribuição editável
-    - [ ] Excluir
+    - [x] Excluir
     - [ ] Mostrar histórico de alterações
     - [ ] Melhorar estilização
   - [ ] Autenticação

@@ -1,6 +1,6 @@
 import Task from "~/interfaces/Task";
 import { Input } from "../ui/input";
-import { Form } from "@remix-run/react";
+import { Form, useFetcher } from "@remix-run/react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import {
@@ -14,10 +14,11 @@ import {
 } from "../ui/select";
 import Priority from "~/interfaces/Priority";
 import Editor from "../editor";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { DialogHeader } from "../ui/dialog";
 import Column from "~/interfaces/Column";
+import { Trash } from "lucide-react";
 
 interface EditTaskDialogContentProps {
   task: Task | null;
@@ -41,12 +42,29 @@ export default function EditTaskDialog({
     }
   );
 
-  console.log(task);
+  const fetcher = useFetcher();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="w-fit">
       <DialogHeader>
         <DialogTitle>Editar tarefa</DialogTitle>
+        <fetcher.Form method="delete">
+          <Input
+            className="hidden"
+            hidden
+            name="delete"
+            type="checkbox"
+            defaultChecked={true}
+          />
+          <Input ref={inputRef} type="submit" hidden className="hidden" />
+          <Button
+            onClick={() => inputRef.current?.click()}
+            className="absolute top-2 right-10 h-8 w-5 bg-transparent dark:bg-transparent dark:text-slate-200 text-slate-800 hover:bg-slate-300 dark:hover:bg-slate-800"
+          >
+            <Trash />
+          </Button>
+        </fetcher.Form>
       </DialogHeader>
 
       <Form className="grid gap-4 py-4" method="put">

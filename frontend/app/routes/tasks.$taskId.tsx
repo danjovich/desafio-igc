@@ -32,10 +32,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   invariant(params.taskId, "Missing taskId param");
+  const id = params.taskId;
 
   const formData = await request.formData();
 
-  const id = params.taskId;
+  const del = formData.get("delete") as string | null;
+
+  if (del) {
+    await ApiService.getInstance().deleteTask(id);
+
+    return redirect("/");
+  }
+
   const title = (formData.get("title") as string | null) ?? undefined;
   const description =
     (formData.get("description") as string | null) ?? undefined;
