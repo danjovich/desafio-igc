@@ -7,5 +7,5 @@ export default interface Task {
   description: string;
   priority: Priority;
   responsible?: User;
-  column_id: string;
+  columnId: string;
 }

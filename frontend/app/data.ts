@@ -7,7 +7,7 @@ export const tasks0: Task[] = [
     title: "Create a new project",
     description: "Create a new project using Remix",
     priority: Priority.High,
-    column_id: "1",
+    columnId: "1",
     responsible: {
       id: 1,
       name: "John Doe",
@@ -19,7 +19,7 @@ export const tasks0: Task[] = [
     title: "Create a new task",
     description: "Create a new task on the project",
     priority: Priority.Medium,
-    column_id: "1",
+    columnId: "1",
     responsible: {
       id: 2,
       name: "Jane Doe",
@@ -31,7 +31,7 @@ export const tasks0: Task[] = [
     title: "Create a new user",
     description: "Create a new user on the project",
     priority: Priority.Low,
-    column_id: "1",
+    columnId: "1",
     responsible: {
       id: 3,
       name: "John Smith",
@@ -46,7 +46,7 @@ export const tasks1: Task[] = [
     title: "Create a new project",
     description: "Create a new project using Remix",
     priority: Priority.High,
-    column_id: "2",
+    columnId: "2",
     responsible: {
       id: 1,
       name: "John Doe",
@@ -58,7 +58,7 @@ export const tasks1: Task[] = [
     title: "Create a new task",
     description: "Create a new task on the project",
     priority: Priority.Medium,
-    column_id: "2",
+    columnId: "2",
     responsible: {
       id: 2,
       name: "Jane Doe",
@@ -70,7 +70,7 @@ export const tasks1: Task[] = [
     title: "Create a new user",
     description: "Create a new user on the project",
     priority: Priority.Low,
-    column_id: "2",
+    columnId: "2",
     responsible: {
       id: 3,
       name: "John Smith",
@@ -85,7 +85,7 @@ export const tasks2: Task[] = [
     title: "Create a new project",
     description: "Create a new project using Remix",
     priority: Priority.High,
-    column_id: "3",
+    columnId: "3",
     responsible: {
       id: 1,
       name: "John Doe",
@@ -97,7 +97,7 @@ export const tasks2: Task[] = [
     title: "Create a new task",
     description: "Create a new task on the project",
     priority: Priority.Medium,
-    column_id: "3",
+    columnId: "3",
     responsible: {
       id: 2,
       name: "Jane Doe",
@@ -109,7 +109,7 @@ export const tasks2: Task[] = [
     title: "Create a new user",
     description: "Create a new user on the project",
     priority: Priority.Low,
-    column_id: "3",
+    columnId: "3",
     responsible: {
       id: 3,
       name: "John Smith",
@@ -124,7 +124,7 @@ export const tasks3: Task[] = [
     title: "Create a new project",
     description: "Create a new project using Remix",
     priority: Priority.High,
-    column_id: "4",
+    columnId: "4",
     responsible: {
       id: 1,
       name: "John Doe",
@@ -136,7 +136,7 @@ export const tasks3: Task[] = [
     title: "Create a new task",
     description: "Create a new task on the project",
     priority: Priority.Medium,
-    column_id: "4",
+    columnId: "4",
     responsible: {
       id: 2,
       name: "Jane Doe",
@@ -148,7 +148,7 @@ export const tasks3: Task[] = [
     title: "Create a new user",
     description: "Create a new user on the project",
     priority: Priority.Low,
-    column_id: "4",
+    columnId: "4",
     responsible: {
       id: 3,
       name: "John Smith",

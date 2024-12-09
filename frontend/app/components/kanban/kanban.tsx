@@ -1,4 +1,10 @@
-import { DndContext, rectIntersection } from "@dnd-kit/core";
+import {
+  DndContext,
+  PointerSensor,
+  rectIntersection,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { useState } from "react";
 import Task from "~/interfaces/Task";
 import KanbanColumn from "./kanban-column";
@@ -6,6 +12,13 @@ import { tasks0, tasks1, tasks2, tasks3 } from "~/data";
 import Column from "~/interfaces/Column";
 
 export default function Kanban() {
+  // TODO: add sensor for touch devices
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { delay: 0, distance: 0, tolerance: 0 },
+    })
+  );
+
   const [columns, setColumns] = useState<Column[]>([
     { id: "1", title: "ToDo", tasks: tasks0 },
     { id: "2", title: "Done", tasks: tasks1 },
@@ -19,16 +32,17 @@ export default function Kanban() {
 
   return (
     <DndContext
+      sensors={sensors}
       collisionDetection={rectIntersection}
       onDragEnd={(e) => {
         const newColumnId = e.over?.id;
         const task = e.active.data.current as Task | undefined;
-        const oldColumnId = task?.column_id;
+        const oldColumnId = task?.columnId;
 
         if (!task || !task.id) return;
         if (!newColumnId || newColumnId === oldColumnId) return;
 
-        task.column_id = newColumnId as string;
+        task.columnId = newColumnId as string;
 
         const newItems = columns.map((column) => {
           if (column.id === newColumnId) {
