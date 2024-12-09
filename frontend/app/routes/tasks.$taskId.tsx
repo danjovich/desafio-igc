@@ -6,18 +6,27 @@ import Task from "~/interfaces/Task";
 import ApiService from "~/services/ApiService";
 import invariant from "tiny-invariant";
 import Priority from "~/interfaces/Priority";
+import Column from "~/interfaces/Column";
 
 interface LoaderData {
   task: Task;
+  columns: Column[];
+  initialColumnId?: string;
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   invariant(params.taskId, "Missing taskId param");
 
   const task = await ApiService.getInstance().fetchTask(params.taskId);
+  const columns = await ApiService.getInstance().fetchColumns();
+
+  const url = new URL(request.url);
+  const initialColumnId = url.searchParams.get("column");
 
   return {
-    task,
+    task: task.id ? task : null,
+    columns,
+    initialColumnId,
   } as LoaderData;
 };
 
@@ -33,6 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const priority = (formData.get("priority") as Priority | null) ?? undefined;
   const responsible =
     (formData.get("responsible") as string | null) ?? undefined;
+  const columnId = (formData.get("column") as string | null) ?? undefined;
 
   priority &&
     invariant(
@@ -40,19 +50,36 @@ export const action: ActionFunction = async ({ request, params }) => {
       "Prioridade inválida"
     );
 
+  if (id === "new") {
+    invariant(title, "Título não pode ser vazio");
+    invariant(priority, "Prioridade não pode ser vazia");
+    invariant(columnId, "A coluna não pode ser vazia");
+
+    await ApiService.getInstance().createTask({
+      title,
+      description: description ?? "",
+      priority,
+      responsible,
+      columnId,
+    });
+
+    return redirect("/");
+  }
+
   await ApiService.getInstance().updateTask({
     id,
     title,
     description,
     priority,
     responsible,
+    columnId,
   });
 
   return redirect("/");
 };
 
 export default function EditTask() {
-  const { task }: LoaderData = useLoaderData();
+  const { task, columns, initialColumnId }: LoaderData = useLoaderData();
 
   const navigate = useNavigate();
 
@@ -63,7 +90,11 @@ export default function EditTask() {
   return (
     <Dialog defaultOpen modal onOpenChange={onOpenChange}>
       <DialogContent className="w-fit">
-        <EditTaskDialog task={task} />
+        <EditTaskDialog
+          task={task}
+          columns={columns}
+          initialColumnId={initialColumnId}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -14,27 +14,34 @@ import {
 } from "../ui/select";
 import Priority from "~/interfaces/Priority";
 import Editor from "../editor";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { DialogHeader } from "../ui/dialog";
+import Column from "~/interfaces/Column";
 
 interface EditTaskDialogContentProps {
   task: Task | null;
+  columns: Column[];
+  initialColumnId?: string;
 }
 
-export default function EditTaskDialog({ task: defaultTask }: EditTaskDialogContentProps) {
-  const [task, setTask] = useState(defaultTask ?? {
-    id: "",
-    title: "",
-    description: "",
-    priority: Priority.Low,
-    responsible: null,
-    columnId: "",
-  });
+export default function EditTaskDialog({
+  task: defaultTask,
+  columns,
+  initialColumnId,
+}: EditTaskDialogContentProps) {
+  const [task, setTask] = useState(
+    defaultTask ?? {
+      id: "",
+      title: "",
+      description: "",
+      priority: Priority.Low,
+      responsible: null,
+      columnId: initialColumnId ?? "",
+    }
+  );
 
-  useEffect(() => {
-    console.log(task.description);
-  }, [task]);
+  console.log(task);
 
   return (
     <div className="w-fit">
@@ -98,6 +105,28 @@ export default function EditTaskDialog({ task: defaultTask }: EditTaskDialogCont
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        <Label htmlFor="column">Coluna</Label>
+        <Select
+          name="column"
+          value={task.columnId}
+          onValueChange={(id) => setTask({ ...task, columnId: id })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione a coluna" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Colunas</SelectLabel>
+              {columns.map(({ title, id }) => (
+                <SelectItem key={id} value={id} textValue={title}>
+                  {title}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
         <Button type="submit">Salvar</Button>
       </Form>
     </div>

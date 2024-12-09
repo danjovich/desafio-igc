@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import Task from "~/interfaces/Task";
 import { useNavigate } from "@remix-run/react";
 
@@ -27,8 +27,9 @@ export default function KanbanCard({ task }: KanbanCardProps) {
       {...attributes}
       ref={setNodeRef}
       style={style}
+      className="p-2 shadow-md rounded-lg mb-2 z-10"
     >
-      <CardTitle>{task.title}</CardTitle>
+      <CardContent className="p-0 max-w-40 overflow-scroll">{task.title}</CardContent>
     </Card>
   );
 }

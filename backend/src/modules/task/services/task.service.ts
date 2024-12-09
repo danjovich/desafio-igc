@@ -39,7 +39,9 @@ export class TaskService {
   }
 
   async getTask(id: string): Promise<Task> {
-    const task = await this.prisma.task.findUnique({ where: { id } });
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+    });
 
     if (!task) {
       throw new NotFoundException('Task not found');

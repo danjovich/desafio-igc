@@ -74,7 +74,7 @@ export default function Kanban({ columns }: KanbanProps) {
             <KanbanColumn column={column} key={column.id} />
           ))}
         </div>
-        <NavLink to="/columns/new">
+        <NavLink to="/columns/new" className="flex justify-center mt-3">
           <Button type="submit">Adicionar coluna</Button>
         </NavLink>
       </div>
