@@ -66,7 +66,7 @@ export default function Kanban({ columns }: KanbanProps) {
 
         task.columnId = newColumnId as string;
 
-        const newItems = internalColumns.map((column) => {
+        const newItems = Array.isArray(internalColumns) ? internalColumns.map((column) => {
           if (column.id === newColumnId) {
             // adds the task to the new column
             return {
@@ -81,7 +81,7 @@ export default function Kanban({ columns }: KanbanProps) {
             };
           }
           return column;
-        });
+        }) : [];
 
         setInternalColumns(newItems);
         if (columnsRef.current) {

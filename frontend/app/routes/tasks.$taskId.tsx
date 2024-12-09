@@ -8,17 +8,29 @@ import invariant from "tiny-invariant";
 import Priority from "~/interfaces/Priority";
 import Column from "~/interfaces/Column";
 import TaskHistory from "~/interfaces/TaskHistory";
+import { createClerkClient } from "@clerk/remix/api.server";
 
 interface LoaderData {
   task: Task;
   taskHistory: TaskHistory[];
   columns: Column[];
   initialColumnId?: string;
+  users: string[];
 }
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   invariant(params.taskId, "Missing taskId param");
 
+  const clerkClient = createClerkClient({
+    secretKey: process.env.CLERK_SECRET_KEY,
+  });
+
+  const usersList = await clerkClient.users.getUserList();
+  const users = usersList.data.map((u) =>
+    u.username ?? u.emailAddresses ? u.emailAddresses[0].emailAddress : "Unknown"
+  );
+
+  // get task, task history and columns
   const task = await ApiService.getInstance().fetchTask(params.taskId);
   const taskHistory = await ApiService.getInstance().fetchTaskHistory(
     params.taskId
@@ -56,6 +68,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     columns,
     initialColumnId,
     taskHistory: actualTaskHistory,
+    users,
   } as LoaderData;
 };
 
@@ -116,7 +129,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function EditTask() {
-  const { task, columns, initialColumnId, taskHistory }: LoaderData =
+  const { task, columns, initialColumnId, taskHistory, users }: LoaderData =
     useLoaderData();
 
   const navigate = useNavigate();
@@ -133,6 +146,7 @@ export default function EditTask() {
           taskHistory={taskHistory}
           columns={columns}
           initialColumnId={initialColumnId}
+          users={users}
         />
       </DialogContent>
     </Dialog>

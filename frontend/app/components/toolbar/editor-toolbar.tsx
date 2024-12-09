@@ -15,8 +15,6 @@ import {
 import { Toggle } from "~/components/ui/toggle";
 import { ToggleGroup, Toolbar } from "./toolbar";
 
-import { FormatType } from "./format-type";
-
 interface EditorToolbarProps {
   editor: Editor;
 }
@@ -111,7 +109,6 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           <Minus className="h-4 w-4" />
         </Toggle>
 
-        <FormatType editor={editor} />
       </ToggleGroup>
 
       <ToggleGroup

@@ -163,7 +163,7 @@ export function App() {
                 Um Kanban colaborativo minimalista e fácil de usar.
               </p>
               <img
-                className="rounded-2xl mt-8"
+                className="rounded-2xl mt-8 px-32"
                 src="/screenshot.png"
                 alt="Kanban"
               />

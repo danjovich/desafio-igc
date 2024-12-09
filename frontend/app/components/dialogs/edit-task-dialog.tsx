@@ -29,6 +29,7 @@ interface EditTaskDialogContentProps {
   taskHistory: TaskHistory[];
   columns: Column[];
   initialColumnId?: string;
+  users: string[];
 }
 
 export default function EditTaskDialog({
@@ -36,6 +37,7 @@ export default function EditTaskDialog({
   taskHistory,
   columns,
   initialColumnId,
+  users,
 }: EditTaskDialogContentProps) {
   const [task, setTask] = useState(
     defaultTask ?? {
@@ -160,9 +162,8 @@ export default function EditTaskDialog({
           <Label htmlFor="responsible">Responsável</Label>
           <Select
             name="responsible"
-            value={task.responsible?.name}
-            // TODO: update user
-            onValueChange={() => setTask({ ...task })}
+            value={task.responsible ?? undefined}
+            onValueChange={(user) => setTask({ ...task, responsible: user })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione o responsável" />
@@ -170,7 +171,7 @@ export default function EditTaskDialog({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Usuários</SelectLabel>
-                {["John Doe", "Jane Doe", "John Smith"].map((name) => (
+                {users?.map((name) => (
                   <SelectItem key={name} value={name}>
                     {name}
                   </SelectItem>
