@@ -35,6 +35,11 @@ export class TaskController {
     return this.taskService.getTasks();
   }
 
+  @Get(':id')
+  async getTask(@Param('id') id: string) {
+    return this.taskService.getTask(id);
+  }
+
   @Put(':id')
   async updateTask(
     @Param('id') id: string,
