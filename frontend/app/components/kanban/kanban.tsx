@@ -32,10 +32,12 @@ export default function Kanban({ columns }: KanbanProps) {
     setInternalColumns(columns);
   }, [columns]);
 
-  const columnsWithIds = internalColumns?.map((column, index) => ({
-    ...column,
-    index: index,
-  })) ?? [];
+  const columnsWithIds = Array.isArray(internalColumns)
+    ? internalColumns?.map((column, index) => ({
+        ...column,
+        index: index,
+      }))
+    : [];
 
   const columnsRef = useRef<HTMLInputElement>(null);
   const changeColumnsRef = useRef<HTMLInputElement>(null);
@@ -66,22 +68,24 @@ export default function Kanban({ columns }: KanbanProps) {
 
         task.columnId = newColumnId as string;
 
-        const newItems = Array.isArray(internalColumns) ? internalColumns.map((column) => {
-          if (column.id === newColumnId) {
-            // adds the task to the new column
-            return {
-              ...column,
-              tasks: [...column.tasks, task],
-            };
-          } else if (column.id === oldColumnId) {
-            // removes the task from the old column
-            return {
-              ...column,
-              tasks: column.tasks.filter((t) => t.id !== task.id),
-            };
-          }
-          return column;
-        }) : [];
+        const newItems = Array.isArray(internalColumns)
+          ? internalColumns.map((column) => {
+              if (column.id === newColumnId) {
+                // adds the task to the new column
+                return {
+                  ...column,
+                  tasks: [...column.tasks, task],
+                };
+              } else if (column.id === oldColumnId) {
+                // removes the task from the old column
+                return {
+                  ...column,
+                  tasks: column.tasks.filter((t) => t.id !== task.id),
+                };
+              }
+              return column;
+            })
+          : [];
 
         setInternalColumns(newItems);
         if (columnsRef.current) {
