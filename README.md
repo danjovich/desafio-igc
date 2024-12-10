@@ -28,13 +28,14 @@ Esse repositório contém o frontend e o backend de um sistema de Kanban colabor
 
 ### Backend
 
-Em primeiro lugar, deve-se criar o arquivo com variáveis de ambiente. Pode-se fazê-lo a partir do exemplo fornecido:
+Em primeiro lugar, deve-se entrar na pasta do backend e criar o arquivo com variáveis de ambiente. Pode-se fazê-lo a partir do exemplo fornecido:
 
 ```sh
+cd backend
 cp .env.example .env
 ```
 
-Depois, é preciso criar uma conta no [Clerk](https://dashboard.clerk.com/sign-up?redirect_url=https%3A%2F%2Fdashboard.clerk.com%2F). Entrando na dashboard, acessar `API Keys > Show JWT Public Key`:
+Depois, é preciso criar uma conta no [Clerk](https://dashboard.clerk.com/sign-up?redirect_url=https%3A%2F%2Fdashboard.clerk.com%2F). Entrando na dashboard, acessar `Configure > API Keys > Show JWT Public Key`:
 
 ![Clerk](images/clerk.png)
 
@@ -47,7 +48,6 @@ Para executar o backend, é preciso ter o `pnpm` instalado.
 Com o `pnpm`, executar, na pasta raiz desse repositório:
 
 ```
-cd backend
 pnpm install
 pnpm prisma migrate dev
 pnpm start:dev
@@ -55,9 +55,10 @@ pnpm start:dev
 
 ### Frontend
 
-Primeiro, criar o arquivo com variáveis de ambiente:
+Primeiro, entrar na pasta do frontend criar o arquivo com variáveis de ambiente:
 
 ```sh
+cd frontend
 cp .env.local.example .env.local
 ```
 
@@ -77,7 +78,6 @@ Para executar o frontend, também é preciso ter o `pnpm` instalado.
 Com o `pnpm`, executar, na pasta raiz desse repositório:
 
 ```
-cd frontend
 pnpm install
 pnpm dev
 ```

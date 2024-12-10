@@ -32,10 +32,10 @@ export default function Kanban({ columns }: KanbanProps) {
     setInternalColumns(columns);
   }, [columns]);
 
-  const columnsWithIds = internalColumns.map((column, index) => ({
+  const columnsWithIds = internalColumns?.map((column, index) => ({
     ...column,
     index: index,
-  }));
+  })) ?? [];
 
   const columnsRef = useRef<HTMLInputElement>(null);
   const changeColumnsRef = useRef<HTMLInputElement>(null);
